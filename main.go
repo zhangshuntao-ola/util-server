@@ -251,8 +251,8 @@ func startWebServer() {
 	// 处理回调
 	r.POST("/callback", handleCallback)
 
-	// 图片文件服务
-	r.Static("/test-", "./")
+	// 图片文件服务 - 直接映射测试文件夹
+	r.StaticFS("/files", http.Dir("./"))
 
 	// Web界面路由
 	r.GET("/", handleIndex)
