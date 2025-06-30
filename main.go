@@ -241,7 +241,7 @@ func handleCallback(c *gin.Context) {
 
 	fmt.Printf("收到回调: TaskID=%s, Success=%v\n", callback.TaskID, callback.Success)
 
-	if !callback.Success {
+	if callback.Msg != "success" {
 		log.Printf("任务失败: %s, 错误信息: %s", callback.TaskID, callback.Msg)
 		c.JSON(200, gin.H{"status": "ok"})
 		return

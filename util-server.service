@@ -1,0 +1,31 @@
+[Unit]
+Description=Util Server - AI Image Generation Test Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/home/tiger/util-server
+ExecStart=/home/tiger/util-server/server
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=util-server
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/util-server
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+
+# Environment
+Environment=GIN_MODE=release
+
+[Install]
+WantedBy=multi-user.target
