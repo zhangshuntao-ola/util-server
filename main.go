@@ -58,9 +58,11 @@ type CSVRow struct {
 
 // 全局变量
 var (
-	testFolder  string
-	apiURL      = "http://192.168.11.4:7865/comfyui/scene_text2img"
-	callbackURL = "http://localhost:9983/callback"
+	testFolder      string
+	apiURL          = "http://192.168.11.4:7865/comfyui/scene_text2img"
+	callbackURL     = "http://localhost:9983/callback"
+	requestInterval = 5 * time.Second  // 请求间隔时间
+	retryWaitBase   = 10 * time.Second // 重试等待基础时间
 )
 
 func main() {
@@ -76,10 +78,18 @@ func main() {
 // 运行测试用例
 func runTests() {
 	if len(os.Args) < 3 {
-		log.Fatal("Usage: go run main.go test <csv_file>")
+		log.Fatal("Usage: go run main.go test <csv_file> [interval_seconds]")
 	}
 
 	csvFile := os.Args[2]
+
+	// 如果提供了间隔时间参数，使用它
+	if len(os.Args) > 3 {
+		if interval, err := strconv.Atoi(os.Args[3]); err == nil && interval > 0 {
+			requestInterval = time.Duration(interval) * time.Second
+			fmt.Printf("使用自定义请求间隔: %v\n", requestInterval)
+		}
+	}
 
 	// 创建测试文件夹
 	testFolder = fmt.Sprintf("test-%s", time.Now().Format("20060102-150405"))
@@ -98,10 +108,32 @@ func runTests() {
 	// 发送测试请求
 	for i, row := range rows {
 		fmt.Printf("发送测试请求 %d/%d\n", i+1, len(rows))
-		if err := sendTestRequest(row); err != nil {
-			log.Printf("发送请求失败: %v", err)
+
+		// 重试机制
+		maxRetries := 3
+		for retry := 0; retry < maxRetries; retry++ {
+			if err := sendTestRequest(row); err != nil {
+				if strings.Contains(err.Error(), "429") || strings.Contains(err.Error(), "rate limit") {
+					// 如果是频率限制错误，等待更长时间再重试
+					waitTime := time.Duration(10*(retry+1)) * time.Second
+					log.Printf("请求频率限制，等待 %v 后重试... (重试 %d/%d)", waitTime, retry+1, maxRetries)
+					time.Sleep(waitTime)
+					continue
+				} else {
+					log.Printf("发送请求失败: %v", err)
+					break
+				}
+			} else {
+				// 请求成功，跳出重试循环
+				break
+			}
 		}
-		time.Sleep(time.Second) // 避免请求过于频繁
+
+		// 请求间隔，避免频率过快
+		if i < len(rows)-1 { // 不是最后一个请求
+			fmt.Printf("等待 %v 后发送下一个请求...\n", requestInterval)
+			time.Sleep(requestInterval)
+		}
 	}
 
 	fmt.Println("所有测试请求已发送完成")
@@ -241,7 +273,7 @@ func handleCallback(c *gin.Context) {
 
 	fmt.Printf("收到回调: TaskID=%s, Success=%v\n", callback.TaskID, callback.Success)
 
-	if !callback.Success {
+	if callback.Msg != "success" { // 不要动
 		log.Printf("任务失败: %s, 错误信息: %s", callback.TaskID, callback.Msg)
 		c.JSON(200, gin.H{"status": "ok"})
 		return
