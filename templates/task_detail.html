@@ -103,8 +103,10 @@
         .modal-content {
             position: relative;
             margin: auto;
-            display: block;
-            max-width: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 95%;
             max-height: 800px;
             top: 50%;
             transform: translateY(-50%);
@@ -117,9 +119,11 @@
         }
         
         .modal img {
-            width: 100%;
-            height: auto;
+            max-width: 100%;
             max-height: 800px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
             border-radius: 5px;
         }
         
@@ -157,7 +161,7 @@
         @media screen and (max-width: 768px) {
             .modal-content {
                 max-width: 95%;
-                max-height: 800px;
+                max-height: 80vh;
             }
             .close {
                 top: 10px;
@@ -168,6 +172,9 @@
                 bottom: 10px;
                 font-size: 14px;
                 padding: 8px 15px;
+            }
+            .modal img {
+                max-height: 80vh;
             }
         }
     </style>
