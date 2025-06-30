@@ -1,26 +1,10 @@
 app_id,role_desc,scenes,style
-11,女 白色裙子 23岁,friends-友谊万岁,real
-11,女 25岁,acquaintance-甜蜜升温,real
-11,女 黑色裙子 22岁,crush-怦然心动,real
-11,女 22岁,secret_lover-爱意澎湃,real
-11,女 礼服 24岁,married_couple-新婚快乐,real
+11,女 白色裙子 23岁,friends-友谊万岁;acquaintance-甜蜜升温;crush-怦然心动;secret_lover-爱意澎湃;married_couple-新婚快乐,real
 
-11,男 白色衬衫 28岁,friends-友谊万岁,real
-11,男 30岁,acquaintance-甜蜜升温,real
-11,男 黑色衬衫 25岁,crush-怦然心动,real
-11,男 25岁,secret_lover-爱意澎湃,real
-11,男 西装 26岁,married_couple-新婚快乐,real
+11,男 白色衬衫 28岁,friends-友谊万岁;acquaintance-甜蜜升温;crush-怦然心动;secret_lover-爱意澎湃;married_couple-新婚快乐,real
 
 
-11,女 白色裙子 23岁,friends-友谊万岁,cartoon
-11,女 25岁,acquaintance-甜蜜升温,cartoon
-11,女 黑色裙子 22岁,crush-怦然心动,cartoon
-11,女 22岁,secret_lover-爱意澎湃,cartoon
-11,女 礼服 24岁,married_couple-新婚快乐,cartoon 
+11,女 白色裙子 23岁,friends-友谊万岁;acquaintance-甜蜜升温;crush-怦然心动;secret_lover-爱意澎湃;married_couple-新婚快乐,cartoon 
 
 
-11,男 白色衬衫 28岁,friends-友谊万岁,cartoon
-11,男 30岁,acquaintance-甜蜜升温,cartoon
-11,男 黑色衬衫 25岁,crush-怦然心动,cartoon
-11,男 25岁,secret_lover-爱意澎湃,cartoon
-11,男 西装 26岁,married_couple-新婚快乐,cartoon
+11,男 白色衬衫 28岁,friends-友谊万岁;acquaintance-甜蜜升温;crush-怦然心动;secret_lover-爱意澎湃;married_couple-新婚快乐,cartoon

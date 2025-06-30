@@ -139,7 +139,7 @@ func readCSV(filename string) ([]CSVRow, error) {
 		}
 
 		// 解析scenes字段，假设用逗号分隔
-		scenes := strings.Split(record[2], ",")
+		scenes := strings.Split(record[2], ";")
 		for j := range scenes {
 			scenes[j] = strings.TrimSpace(scenes[j])
 		}
