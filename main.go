@@ -241,7 +241,7 @@ func handleCallback(c *gin.Context) {
 
 	fmt.Printf("收到回调: TaskID=%s, Success=%v\n", callback.TaskID, callback.Success)
 
-	if callback.Msg != "success" {
+	if !callback.Success {
 		log.Printf("任务失败: %s, 错误信息: %s", callback.TaskID, callback.Msg)
 		c.JSON(200, gin.H{"status": "ok"})
 		return
@@ -313,14 +313,35 @@ func extractScenesFromDesc(content string) []string {
 
 // 下载图片
 func downloadImage(url, folder, sceneName string) error {
+	// 如果URL不包含协议前缀，添加默认前缀
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		url = "https://res.theact.ai/" + url
+	}
+
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
+	// 从URL中获取文件扩展名，如果没有则默认使用.jpg
+	ext := ".jpg"
+	if strings.Contains(url, ".") {
+		parts := strings.Split(url, ".")
+		if len(parts) > 1 {
+			lastPart := parts[len(parts)-1]
+			// 移除可能的查询参数
+			if idx := strings.Index(lastPart, "?"); idx != -1 {
+				lastPart = lastPart[:idx]
+			}
+			if lastPart != "" {
+				ext = "." + lastPart
+			}
+		}
+	}
+
 	// 创建文件
-	filename := fmt.Sprintf("%s.jpg", sceneName)
+	filename := fmt.Sprintf("%s%s", sceneName, ext)
 	filepath := filepath.Join(folder, filename)
 
 	file, err := os.Create(filepath)
@@ -414,9 +435,18 @@ func getImages(taskFolder string) []string {
 		return images
 	}
 
+	// 支持的图片格式
+	imageExts := []string{".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"}
+
 	for _, entry := range entries {
-		if !entry.IsDir() && strings.HasSuffix(strings.ToLower(entry.Name()), ".jpg") {
-			images = append(images, entry.Name())
+		if !entry.IsDir() {
+			filename := strings.ToLower(entry.Name())
+			for _, ext := range imageExts {
+				if strings.HasSuffix(filename, ext) {
+					images = append(images, entry.Name())
+					break
+				}
+			}
 		}
 	}
 	return images
