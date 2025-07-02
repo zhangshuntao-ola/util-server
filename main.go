@@ -61,7 +61,7 @@ var (
 	testFolder      string
 	apiURL          = "http://192.168.11.4:7865/comfyui/scene_text2img"
 	callbackURL     = "http://localhost:9983/callback"
-	requestInterval = 5 * time.Second  // 请求间隔时间
+	requestInterval = 20 * time.Second // 请求间隔时间
 	retryWaitBase   = 10 * time.Second // 重试等待基础时间
 )
 
