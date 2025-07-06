@@ -319,7 +319,7 @@ func handleCallback(c *gin.Context) {
 		if img.Index < len(scenes) {
 			sceneName = scenes[img.Index]
 		} else {
-			sceneName = fmt.Sprintf("scene_%d", img.Index)
+			sceneName = fmt.Sprintf("原图_%d", img.Index)
 		}
 
 		if err := downloadImage(img.URL, taskFolder, sceneName); err != nil {
